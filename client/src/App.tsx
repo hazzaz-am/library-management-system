@@ -1,9 +1,11 @@
-import { Button } from "./components/ui/button";
+import { Outlet } from "react-router";
+import Navbar from "./components/common/Navbar";
 
 export default function App() {
-  return (
-    <div>
-      <Button>Hello</Button>
-    </div>
-  )
+	return (
+		<>
+			<Navbar />
+			<Outlet />
+		</>
+	);
 }
