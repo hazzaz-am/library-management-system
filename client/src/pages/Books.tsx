@@ -1,3 +1,4 @@
+import { BooksTable } from "@/components/modules/books/BooksTable";
 
 // Example summary data (replace with real data as needed)
 const summary = [
@@ -58,8 +59,10 @@ export default function Books() {
 
       {/* Table goes here */}
       <div className="mt-6">
-        {/* Your table component will be placed here */}
-        <div className="text-center text-gray-400">[Table Placeholder]</div>
+        <h2 className="text-lg font-semibold">Books List</h2>
+        <div className="text-center text-gray-400">
+          <BooksTable />
+        </div>
       </div>
     </div>
   );
