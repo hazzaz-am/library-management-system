@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Form,
 	FormControl,
@@ -15,26 +16,30 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 export default function AddBookForm() {
+	const navigate = useNavigate()
 	const form = useForm({
 		defaultValues: {
 			title: "",
 			author: "",
+			description: "",
+			isbn: "",
 			genre: "",
 			copies: "",
+			available: true,
 		},
 	});
 	const onSubmit: SubmitHandler<FieldValues> = (data) => {
-		const isbn = `ISBN-${Math.random().toString(36).substring(2, 15)}`;
-
 		const bookData = {
 			...data,
-			isbn,
 		};
 		console.log("Book Data Submitted:", bookData);
 		form.reset();
+		navigate("/");
 	};
 	return (
 		<Form {...form}>
@@ -74,10 +79,63 @@ export default function AddBookForm() {
 									{...field}
 									{...form.register("author", {
 										required: "Author is required",
+										minLength: {
+											message: "Author must be at least 2 characters",
+											value: 2,
+										},
+										pattern: {
+											message: "Author must be a valid name",
+											value: /^[a-zA-Z\s]+$/,
+										},
 									})}
 								/>
 							</FormControl>
 							<FormMessage>{form.formState.errors.author?.message}</FormMessage>
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="description"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>
+								Description <span className="text-destructive">*</span>
+							</FormLabel>
+							<FormControl>
+								<Textarea
+									placeholder="Tell us a little bit about the book"
+									className="resize-none"
+									{...field}
+									{...form.register("description", {
+										required: "Description is required",
+									})}
+								/>
+							</FormControl>
+							<FormMessage>
+								{form.formState.errors.description?.message}
+							</FormMessage>
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="isbn"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>
+								ISBN <span className="text-destructive">*</span>
+							</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="Enter ISBN"
+									{...field}
+									{...form.register("isbn", {
+										required: "ISBN is required",
+									})}
+								/>
+							</FormControl>
+							<FormMessage>{form.formState.errors.isbn?.message}</FormMessage>
 						</FormItem>
 					)}
 				/>
@@ -144,8 +202,29 @@ export default function AddBookForm() {
 						</FormItem>
 					)}
 				/>
+				<FormField
+					control={form.control}
+					name="available"
+					render={({ field }) => (
+						<FormItem className="flex flex-row-reverse items-center">
+							<FormLabel>Book Available</FormLabel>
+							<FormControl>
+								<Checkbox
+									checked={field.value}
+									onCheckedChange={field.onChange}
+								/>
+							</FormControl>
+							<FormMessage>
+								{form.formState.errors.available?.message}
+							</FormMessage>
+						</FormItem>
+					)}
+				/>
+
 				<Button type="submit">Add Book</Button>
 			</form>
 		</Form>
 	);
 }
+
+//  Title, Author, Genre, ISBN, Description, Copies, Available (optional, defaults to true).
