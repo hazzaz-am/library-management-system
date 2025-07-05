@@ -41,6 +41,7 @@ export default function AddBookForm() {
 		form.reset();
 		navigate("/");
 	};
+	
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -227,4 +228,3 @@ export default function AddBookForm() {
 	);
 }
 
-//  Title, Author, Genre, ISBN, Description, Copies, Available (optional, defaults to true).

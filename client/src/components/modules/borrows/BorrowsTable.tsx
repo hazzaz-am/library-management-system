@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -33,6 +32,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { DeleteBorrowModal } from "./DeleteBorrowModal";
 
 type BookType = {
 	title: string;
@@ -84,9 +84,9 @@ const data: Borrow[] = [
 
 export const columns: ColumnDef<Borrow>[] = [
 	{
-		accessorKey: "title",
+		accessorFn: (row) => row.book.title,
+		id: "title",
 		header: ({ column }) => {
-			console.log(column);
 			return (
 				<Button
 					variant="ghost"
@@ -98,28 +98,34 @@ export const columns: ColumnDef<Borrow>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className="lowercase text-center">{row.original.book.title}</div>,
+		cell: ({ row }) => {
+			return (
+				<div className="lowercase text-center">{row.original.book.title}</div>
+			);
+		},
 	},
 	{
 		accessorKey: "isbn",
 		header: () => <div className="text-center">ISBN</div>,
-		cell: ({ row }) => <div className="capitalize text-center">{row.original.book.isbn}</div>,
+		cell: ({ row }) => (
+			<div className="capitalize text-center">{row.original.book.isbn}</div>
+		),
 	},
-  {
-    accessorKey: "totalQuantity",
-    header: () => <div className="text-center">Total Quantity</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        <Badge variant="secondary">{row.original.totalQuantity}</Badge>
-      </div>
-    ),
-  },
+	{
+		accessorKey: "totalQuantity",
+		header: () => <div className="text-center">Total Quantity</div>,
+		cell: ({ row }) => (
+			<div className="text-center">
+				<Badge variant="secondary">{row.original.totalQuantity}</Badge>
+			</div>
+		),
+	},
 	{
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,
-		cell: () => {
+		cell: ({ row }) => {
 			return (
-				<DropdownMenu >
+				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="link" className="h-8 w-full p-0 mx-auto">
 							<span className="sr-only">Open menu</span>
@@ -127,7 +133,7 @@ export const columns: ColumnDef<Borrow>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem>Delete Book</DropdownMenuItem>
+						<DeleteBorrowModal id={row.id} />
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
@@ -160,7 +166,7 @@ export function BorrowsTable() {
 		},
 	});
 
-  console.log(table.getColumn("title"));
+	// console.log(table.getColumn("title"));
 
 	return (
 		<div className="w-full">

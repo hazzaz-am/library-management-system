@@ -13,15 +13,17 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+	ArrowUpDown,
+	ChevronDown,
+	MoreHorizontal,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -35,6 +37,9 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { EditBookForm } from "./EditBookForm";
+import { DeleteBookModal } from "./DeleteBookModal";
+import { BorrowBookForm } from "../borrows/BorrowBookForm";
 
 const data: Book[] = [
 	{
@@ -185,6 +190,8 @@ export const columns: ColumnDef<Book>[] = [
 	{
 		accessorKey: "title",
 		header: ({ column }) => {
+			// console.log(column.getIsSorted());
+
 			return (
 				<Button
 					variant="ghost"
@@ -196,7 +203,10 @@ export const columns: ColumnDef<Book>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
+		cell: ({ row }) => {
+			// console.log(row.getValue("title"));
+			return <div className="lowercase">{row.getValue("title")}</div>;
+		},
 	},
 	{
 		accessorKey: "author",
@@ -271,8 +281,6 @@ export const columns: ColumnDef<Book>[] = [
 		id: "actions",
 		header: () => <div className="text-center">Actions</div>,
 		cell: ({ row }) => {
-			const book = row.original;
-
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -281,17 +289,13 @@ export const columns: ColumnDef<Book>[] = [
 							<MoreHorizontal />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(book.id)}
-						>
-							Copy Book Id
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Borrow Book</DropdownMenuItem>
-						<DropdownMenuItem>Edit Book</DropdownMenuItem>
-						<DropdownMenuItem>Delete Book</DropdownMenuItem>
+					<DropdownMenuContent
+						align="end"
+						className="flex flex-col space-y-1.5"
+					>
+						<BorrowBookForm />
+						<EditBookForm />
+						<DeleteBookModal id={row.id} />
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
