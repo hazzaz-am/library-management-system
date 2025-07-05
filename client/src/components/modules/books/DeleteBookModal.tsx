@@ -15,18 +15,28 @@ import toastMessage from "@/utils/toast-message";
 import { Trash2 } from "lucide-react";
 
 export function DeleteBookModal({ id }: { id: string }) {
+	const [deleteBook] = useDeleteBookByIdMutation();
 
-	const [deleteBook] = useDeleteBookByIdMutation()
-
-	const handleDelete = () => {
-		deleteBook(id);
-		toastMessage("success", "Book deleted successfully");
+	const handleDelete = async () => {
+		try {
+			await deleteBook(id).unwrap();
+			toastMessage("success", "Book deleted successfully");
+		} catch (error) {
+			if (error instanceof Error) {
+				toastMessage("error", `Error: ${error.message}`);
+			} else {
+				toastMessage("error", "Failed to delete book");
+			}
+		}
 	};
 
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant="secondary" className="bg-red-600 hover:bg-red-700 text-white">
+				<Button
+					variant="secondary"
+					className="bg-red-600 hover:bg-red-700 text-white"
+				>
 					<Trash2 />
 					Delete
 				</Button>

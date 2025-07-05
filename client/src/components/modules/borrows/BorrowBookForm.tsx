@@ -40,16 +40,26 @@ export function BorrowBookForm({ id }: { id: string }) {
 		},
 	});
 
-	const onSubmit: SubmitHandler<FieldValues> = (data) => {
+	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		const bookData = {
 			...data,
 			book: id,
 			quantity: parseInt(data.quantity),
 		};
-		borrowBook(bookData);
-		toastMessage("success", "Book borrowed successfully");
-		form.reset();
-		navigate("/borrow-summary");
+
+		try {
+			await borrowBook(bookData).unwrap();
+			toastMessage("success", "Book borrowed successfully");
+			navigate("/borrow-summary");
+		} catch (error) {
+			if (error instanceof Error) {
+				toastMessage("error", `Error: ${error.message}`);
+			} else {
+				toastMessage("error", "Failed to borrow book");
+			}
+		} finally {
+			form.reset();
+		}
 	};
 
 	return (

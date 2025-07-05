@@ -26,6 +26,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useUpdateBookByIdMutation } from "@/redux/features/book/bookSlice";
 import type { BookType } from "@/types";
+import toastMessage from "@/utils/toast-message";
 import { FilePenLine } from "lucide-react";
 import { useState } from "react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
@@ -47,14 +48,23 @@ export function EditBookForm({ book }: { book: BookType }) {
 			available: book.available,
 		},
 	});
-	const onSubmit: SubmitHandler<FieldValues> = (data) => {
+	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		const bookData = {
 			...data,
 		};
-		updateBookById({ bookId: book._id, ...bookData });
-		form.reset();
-		navigate("/");
-		setOpen(false);
+		try {
+			await updateBookById({ bookId: book._id, ...bookData }).unwrap();
+			navigate("/");
+		} catch (error) {
+			if (error instanceof Error) {
+				toastMessage("error", `Error: ${error.message}`);
+			} else {
+				toastMessage("error", "Failed to add book");
+			}
+		} finally {
+			form.reset();
+			setOpen(false);
+		}
 	};
 
 	return (

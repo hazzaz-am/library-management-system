@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddNewBookMutation } from "@/redux/features/book/bookSlice";
+import toastMessage from "@/utils/toast-message";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 export default function AddBookForm() {
 	const navigate = useNavigate();
-	const [addNewBook, result] = useAddNewBookMutation();
+	const [addNewBook] = useAddNewBookMutation();
 	const form = useForm({
 		defaultValues: {
 			title: "",
@@ -35,15 +36,24 @@ export default function AddBookForm() {
 			available: true,
 		},
 	});
-	const onSubmit: SubmitHandler<FieldValues> = (data) => {
+	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		const bookData = {
 			...data,
 			copies: parseInt(data.copies),
 		};
-		addNewBook(bookData);
-		console.log(result);
-		form.reset();
-		navigate("/");
+
+		try {
+			await addNewBook(bookData).unwrap();
+			navigate("/");
+		} catch (error) {
+			if (error instanceof Error) {
+				toastMessage("error", `Error: ${error.message}`);
+			} else {
+				toastMessage("error", "Failed to add book");
+			}
+		} finally {
+			form.reset();
+		}
 	};
 
 	return (

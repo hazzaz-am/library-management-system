@@ -1,69 +1,80 @@
-# React + TypeScript + Vite
+# Smart Library Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application built with React.js that helps manage books, authors, and genres and user can borrow books. This project is designed to be user-friendly and efficient, making it easy for users to find and manage their library resources.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📝 View Available Books
+- ➕ Add New Books
+- ✏️ Edit Book Details
+- ❌ Delete Books
+- 📚 View Authors and Genres
+- 🔍 Search Functionality
+- 📥 Borrow Books
+- 💅 Responsive design
 
-## Expanding the ESLint configuration
+## Live Demo
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Check out the live demo [Click here](https://library-management-system-zhoo.vercel.app).
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Interface Preview
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+![Interface Preview](/public/library-management-api.png)
+## Project Breakdown
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **View Books**: Displays a list of all available books with their details.
+- **Add Book**: Allows users to create new book entries.
+- **Edit Book**: Users can modify existing book details.
+- **Delete Book**: Users can remove books they no longer need.
+- **Error Handling**: Displays `alerts` for API failures.
+- **Form Validation**: Uses `React Hook Form` for managing form state and validation.
+- **State Management**: Utilizes React's `Redux` & `Toolkit` for state management across components.
+
+## Tech Stack
+
+- [React](https://react.dev/) - React framework for production
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Shadcn/ui](https://ui.shadcn.com/) - Beautifully designed components for React
+- [React Hook Form](https://react-hook-form.com/) - Easy form management in React
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript for better development experience
+- [Redux Toolkit](https://redux-toolkit.js.org/) - Official, opinionated, batteries-included toolset for efficient Redux development
+
+## Getting Started
+
+### Prerequisites
+
+- React
+- Tailwind CSS
+- npm or yarn
+- pnpm (optional, but recommended for package management)
+- node.js
+
+### Installation
+
+1. Clone the repository
+
+```
+git clone https://github.com/hazzaz-am/library-management-system.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Navigate to the project directory:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+cd client
+```
+
+3. Install dependencies:
+
+```
+pnpm install
+```
+
+4. Run project locally:
+
+```
+pnpm run dev
+```
+
+## 🙋‍♂️ About Me
+
+I'm `Hazzaz Abdul Mannan`, a passionate frontend developer with a focus on building clean, interactive, and user-friendly interfaces. I enjoy learning new technologies and continuously improving my skills.
