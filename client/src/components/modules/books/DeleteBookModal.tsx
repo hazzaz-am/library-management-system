@@ -10,12 +10,16 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useDeleteBookByIdMutation } from "@/redux/features/book/bookSlice";
 import toastMessage from "@/utils/toast-message";
 import { Trash2 } from "lucide-react";
 
 export function DeleteBookModal({ id }: { id: string }) {
+
+	const [deleteBook] = useDeleteBookByIdMutation()
+
 	const handleDelete = () => {
-		console.log("Book deleted", id);
+		deleteBook(id);
 		toastMessage("success", "Book deleted successfully");
 	};
 

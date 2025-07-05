@@ -27,20 +27,27 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon, DollarSign } from "lucide-react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useBorrowBookMutation } from "@/redux/features/book/bookSlice";
+import toastMessage from "@/utils/toast-message";
 
-export function BorrowBookForm() {
+export function BorrowBookForm({ id }: { id: string }) {
 	const navigate = useNavigate();
+	const [borrowBook] = useBorrowBookMutation();
 	const form = useForm({
 		defaultValues: {
 			quantity: "",
 			dueDate: undefined,
 		},
 	});
+
 	const onSubmit: SubmitHandler<FieldValues> = (data) => {
 		const bookData = {
 			...data,
+			book: id,
+			quantity: parseInt(data.quantity),
 		};
-		console.log("Book Data Submitted:", bookData);
+		borrowBook(bookData);
+		toastMessage("success", "Book borrowed successfully");
 		form.reset();
 		navigate("/borrow-summary");
 	};

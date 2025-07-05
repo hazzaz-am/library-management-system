@@ -24,36 +24,46 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useUpdateBookByIdMutation } from "@/redux/features/book/bookSlice";
+import type { BookType } from "@/types";
 import { FilePenLine } from "lucide-react";
+import { useState } from "react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-export function EditBookForm() {
+export function EditBookForm({ book }: { book: BookType }) {
+	const [open, setOpen] = useState(false);
 	const navigate = useNavigate();
+	const [updateBookById] = useUpdateBookByIdMutation();
+
 	const form = useForm({
 		defaultValues: {
-			title: "",
-			author: "",
-			description: "",
-			isbn: "",
-			genre: "",
-			copies: "",
-			available: true,
+			title: book.title,
+			author: book.author,
+			description: book.description,
+			isbn: book.isbn,
+			genre: book.genre,
+			copies: book.copies,
+			available: book.available,
 		},
 	});
 	const onSubmit: SubmitHandler<FieldValues> = (data) => {
 		const bookData = {
 			...data,
 		};
-		console.log("Book Data Submitted:", bookData);
+		updateBookById({ bookId: book._id, ...bookData });
 		form.reset();
 		navigate("/");
+		setOpen(false);
 	};
 
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="ghost"> <FilePenLine /> Edit Book</Button>
+				<Button variant="ghost" onClick={(e) => e.stopPropagation()}>
+					{" "}
+					<FilePenLine /> Edit Book
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>

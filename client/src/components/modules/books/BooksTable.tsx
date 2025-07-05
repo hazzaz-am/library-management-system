@@ -13,11 +13,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import {
-	ArrowUpDown,
-	ChevronDown,
-	MoreHorizontal,
-} from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,158 +36,15 @@ import { Badge } from "@/components/ui/badge";
 import { EditBookForm } from "./EditBookForm";
 import { DeleteBookModal } from "./DeleteBookModal";
 import { BorrowBookForm } from "../borrows/BorrowBookForm";
+import { useGetBooksQuery } from "@/redux/features/book/bookSlice";
+import type { BookType } from "@/types";
+import TableSkeleton from "@/components/common/TableSkeleton";
+import { Link } from "react-router";
 
-const data: Book[] = [
-	{
-		id: "m5gr84i9",
-		copies: 316,
-		genre: "FICTION",
-		title: "ken99@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "3u1reuv4",
-		copies: 242,
-		genre: "NON_FICTION",
-		title: "Abe45@example.com",
-		author: "Aurelio",
-		isbn: "978-1-56619-909-4",
-		availability: true,
-	},
-	{
-		id: "derv1ws0",
-		copies: 837,
-		genre: "SCIENCE",
-		title: "Monserrat44@example.com",
-		author: "Aurelio",
-		isbn: "978-0-12-345678-9",
-		availability: true,
-	},
-	{
-		id: "5kma53ae",
-		copies: 874,
-		genre: "FANTASY",
-		title: "Silas22@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "HISTORY",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "HISTORY",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "BIOGRAPHY",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: false,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "FICTION",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: false,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "NON_FICTION",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "SCIENCE",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: false,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "SCIENCE",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "SCIENCE",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "SCIENCE",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: false,
-	},
-	{
-		id: "bhqecj4p",
-		copies: 721,
-		genre: "SCIENCE",
-		title: "carmella@example.com",
-		author: "Aurelio",
-		isbn: "978-3-16-148410-0",
-		availability: true,
-	},
-];
-
-export type Book = {
-	id: string;
-	copies: number;
-	genre:
-		| "FICTION"
-		| "NON_FICTION"
-		| "SCIENCE"
-		| "FANTASY"
-		| "HISTORY"
-		| "BIOGRAPHY";
-	title: string;
-	author: string;
-	isbn: string;
-	availability: boolean;
-};
-
-export const columns: ColumnDef<Book>[] = [
+export const columns: ColumnDef<BookType>[] = [
 	{
 		accessorKey: "title",
 		header: ({ column }) => {
-			// console.log(column.getIsSorted());
-
 			return (
 				<Button
 					variant="ghost"
@@ -204,8 +57,7 @@ export const columns: ColumnDef<Book>[] = [
 			);
 		},
 		cell: ({ row }) => {
-			// console.log(row.getValue("title"));
-			return <div className="lowercase">{row.getValue("title")}</div>;
+			return <Link to={`/books/${row.original._id}`}>{row.getValue("title")}</Link>;
 		},
 	},
 	{
@@ -223,7 +75,7 @@ export const columns: ColumnDef<Book>[] = [
 			);
 		},
 		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue("author")}</div>
+			<div>{row.getValue("author")}</div>
 		),
 	},
 	{
@@ -258,12 +110,12 @@ export const columns: ColumnDef<Book>[] = [
 		},
 	},
 	{
-		accessorKey: "availability",
+		accessorKey: "available",
 		header: () => <div className="text-center">Availability</div>,
 		cell: ({ row }) => {
 			return (
 				<>
-					{row.getValue("availability") ? (
+					{row.getValue("available") ? (
 						<Badge
 							variant="secondary"
 							className="bg-blue-500 text-white dark:bg-blue-600"
@@ -292,10 +144,11 @@ export const columns: ColumnDef<Book>[] = [
 					<DropdownMenuContent
 						align="end"
 						className="flex flex-col space-y-1.5"
+					
 					>
-						<BorrowBookForm />
-						<EditBookForm />
-						<DeleteBookModal id={row.id} />
+						<BorrowBookForm id={row.original._id} />
+						<EditBookForm book={row.original} />
+						<DeleteBookModal id={row.original._id} />
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
@@ -308,9 +161,11 @@ export function BooksTable() {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
+	const { data: booksData, error, isLoading } = useGetBooksQuery(undefined);
+	const books = booksData?.data;
 
 	const table = useReactTable({
-		data,
+		data: books,
 		columns,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
@@ -327,6 +182,18 @@ export function BooksTable() {
 			rowSelection,
 		},
 	});
+
+	if (isLoading) {
+		return <TableSkeleton />;
+	}
+
+	if (error || !booksData || !booksData?.data) {
+		return (
+			<div className="bg-red-500/15 rounded-md p-5 mt-10 dark:text-white text-black">
+				Error loading books
+			</div>
+		);
+	}
 
 	return (
 		<div className="w-full">
@@ -395,10 +262,10 @@ export function BooksTable() {
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext()
+												)}
 										</TableCell>
 									))}
 								</TableRow>

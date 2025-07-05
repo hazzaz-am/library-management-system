@@ -17,11 +17,13 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useAddNewBookMutation } from "@/redux/features/book/bookSlice";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 export default function AddBookForm() {
-	const navigate = useNavigate()
+	const navigate = useNavigate();
+	const [addNewBook, result] = useAddNewBookMutation();
 	const form = useForm({
 		defaultValues: {
 			title: "",
@@ -36,12 +38,14 @@ export default function AddBookForm() {
 	const onSubmit: SubmitHandler<FieldValues> = (data) => {
 		const bookData = {
 			...data,
+			copies: parseInt(data.copies),
 		};
-		console.log("Book Data Submitted:", bookData);
+		addNewBook(bookData);
+		console.log(result);
 		form.reset();
 		navigate("/");
 	};
-	
+
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -227,4 +231,3 @@ export default function AddBookForm() {
 		</Form>
 	);
 }
-

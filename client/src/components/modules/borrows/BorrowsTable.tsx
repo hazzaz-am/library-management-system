@@ -13,14 +13,10 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import {
 	Table,
@@ -32,7 +28,8 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { DeleteBorrowModal } from "./DeleteBorrowModal";
+import { useGetBorrowedBooksQuery } from "@/redux/features/book/bookSlice";
+import TableSkeleton from "@/components/common/TableSkeleton";
 
 type BookType = {
 	title: string;
@@ -43,44 +40,6 @@ type Borrow = {
 	totalQuantity: number;
 	book: BookType;
 };
-
-const data: Borrow[] = [
-	{
-		totalQuantity: 5,
-		book: {
-			title: "The Theory of SQL",
-			isbn: "9780553380189",
-		},
-	},
-	{
-		totalQuantity: 3,
-		book: {
-			title: "Introduction to Algorithms",
-			isbn: "9780262033848",
-		},
-	},
-	{
-		totalQuantity: 2,
-		book: {
-			title: "Design Patterns",
-			isbn: "9780201633610",
-		},
-	},
-	{
-		totalQuantity: 4,
-		book: {
-			title: "Clean Code",
-			isbn: "9780132350884",
-		},
-	},
-	{
-		totalQuantity: 1,
-		book: {
-			title: "The Pragmatic Programmer",
-			isbn: "9780135957059",
-		},
-	},
-];
 
 export const columns: ColumnDef<Borrow>[] = [
 	{
@@ -100,7 +59,7 @@ export const columns: ColumnDef<Borrow>[] = [
 		},
 		cell: ({ row }) => {
 			return (
-				<div className="lowercase text-center">{row.original.book.title}</div>
+				<div className="text-center">{row.original.book.title}</div>
 			);
 		},
 	},
@@ -119,26 +78,7 @@ export const columns: ColumnDef<Borrow>[] = [
 				<Badge variant="secondary">{row.original.totalQuantity}</Badge>
 			</div>
 		),
-	},
-	{
-		id: "actions",
-		header: () => <div className="text-center">Actions</div>,
-		cell: ({ row }) => {
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="link" className="h-8 w-full p-0 mx-auto">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DeleteBorrowModal id={row.id} />
-					</DropdownMenuContent>
-				</DropdownMenu>
-			);
-		},
-	},
+	}
 ];
 
 export function BorrowsTable() {
@@ -146,9 +86,11 @@ export function BorrowsTable() {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
+	const {data: borrowsData, isLoading, error} = useGetBorrowedBooksQuery(undefined)
+	const borrowedBooks = borrowsData?.data;
 
 	const table = useReactTable({
-		data,
+		data: borrowedBooks,
 		columns,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
@@ -166,7 +108,18 @@ export function BorrowsTable() {
 		},
 	});
 
-	// console.log(table.getColumn("title"));
+		if (isLoading) {
+			return <TableSkeleton />;
+		}
+	
+		if (error || !borrowsData || !borrowsData?.data) {
+			return (
+				<div className="bg-red-500/15 rounded-md p-5 mt-10 dark:text-white text-black">
+					Error loading borrowed books
+				</div>
+			);
+		}
+	
 
 	return (
 		<div className="w-full">
