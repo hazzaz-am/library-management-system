@@ -49,6 +49,15 @@ export function EditBookForm({ book }: { book: BookType }) {
 		},
 	});
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+		if (data.available === false) {
+			if (data.copies > 0) {
+				toastMessage(
+					"error",
+					"Book can't be unavailable if copies are greater than 0"
+				);
+				return;
+			}
+		}
 		const bookData = {
 			...data,
 		};
