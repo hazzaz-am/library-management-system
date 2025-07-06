@@ -3,6 +3,7 @@ import { Calendar } from "@/components/ui/calendar";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -69,9 +70,14 @@ export function BorrowBookForm({ id }: { id: string }) {
 					<DollarSign /> Borrow Book
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
+			<DialogContent
+				className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto"
+			>
 				<DialogHeader>
 					<DialogTitle>Borrow Book</DialogTitle>
+					<DialogDescription>
+						Select the quantity and due date to borrow the book.
+					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

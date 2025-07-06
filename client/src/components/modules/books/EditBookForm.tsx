@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -87,6 +88,10 @@ export function EditBookForm({ book }: { book: BookType }) {
 			<DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle>Edit Book</DialogTitle>
+					<DialogDescription>
+						Edit the book details below. All fields are required unless
+						otherwise specified.
+					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
